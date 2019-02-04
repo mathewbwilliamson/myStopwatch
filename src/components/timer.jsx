@@ -60,19 +60,25 @@ function Stopwatch() {
     }
 
     function convertTime(time) {
-      const seconds = Math.floor(time / 1000)
-      const minutes = Math.floor((time / 1000) / 60)
-      const hours = Math.floor(time / 1000 / 60 / 60)
+      let seconds = Math.floor(time / 1000)
+      if (seconds > 0) {        
+        seconds = seconds - Math.floor(seconds / 60) * 60
+      }
+      let secondPadding = ''
+      if (seconds < 10) {
+        secondPadding = 0
+      }
 
+      let minutes = Math.floor((time / 1000) / 60)
+      if (minutes > 0) {        
+        minutes = minutes - Math.floor(minutes / 60) * 60
+      }
       let minutePadding = ''
       if (minutes < 10) {
         minutePadding = 0
       }
 
-      let secondPadding = ''
-      if (seconds < 10) {
-        secondPadding = 0
-      }
+      const hours = Math.floor(time / 1000 / 60 / 60)
 
       return `${hours}:${minutePadding}${minutes}:${secondPadding}${seconds}`
     }
