@@ -77,7 +77,6 @@ function Stopwatch() {
           }}
         >
           {convertTime(lapse)}
-          ms
         </label>
         <button onClick={handleRunClick} style={buttonStyles}>
           {running ? 'Stop' : 'Start'}
