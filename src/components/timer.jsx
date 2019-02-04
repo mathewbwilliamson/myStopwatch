@@ -10,6 +10,15 @@ const buttonStyles = {
     width: 200,
 }
 
+const runningButtonStyles = {
+  border: '1px solid #ccc',
+  background: 'lightblue',
+  fontSize: '2em',
+  padding: 15,
+  margin: 5,
+  width: 200,
+}
+
 // 1. Make it small friendly
 // 2. Start saving the times and never clear 
 // Ex: Start Button, Clear Button (saves to state, clears the main screen, adds to bottom)
@@ -67,6 +76,12 @@ function Stopwatch() {
 
       return `${hours}:${minutePadding}${minutes}:${secondPadding}${seconds}`
     }
+
+    let btnStyles = buttonStyles
+
+    if (running) {
+      btnStyles = runningButtonStyles
+    }
   
     return (
       <div style={{textAlign: 'center'}}>
@@ -78,10 +93,11 @@ function Stopwatch() {
         >
           {convertTime(lapse)}
         </label>
-        <button onClick={handleRunClick} style={buttonStyles}>
+        
+        <button onClick={handleRunClick} style={btnStyles}>
           {running ? 'Stop' : 'Start'}
         </button>
-        <button onClick={handleClearClick} style={buttonStyles}>
+        <button onClick={handleClearClick} style={btnStyles}>
           Clear
         </button>
 
