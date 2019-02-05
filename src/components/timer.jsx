@@ -1,35 +1,28 @@
 import React from 'react'
 import {useState, useEffect, useRef} from 'react'
+import './timer.css'
+import base from './base'
 
 const buttonStyles = {
-    border: '1px solid #ccc',
+    border: '1px solid #519D9E',
     background: '#fff',
     fontSize: '2em',
     padding: 15,
     margin: 5,
-    width: 200,
+    width: 100,
 }
 
 const runningButtonStyles = {
-  border: '1px solid #ccc',
-  background: 'lightblue',
+  border: '1px solid #519D9E',
+  background: '#D1B6E1',
   fontSize: '2em',
   padding: 15,
   margin: 5,
-  width: 200,
+  width: 100,
 }
 
-// 1. Make it small friendly
-// 2. Start saving the times and never clear 
-// Ex: Start Button, Clear Button (saves to state, clears the main screen, adds to bottom)
-// 3. Maybe even make a database in Google Firebase that stores the times for each day.
-// Write up a quick Readme
-// Clean up code
-// Put on my GitHub/portfolio as a small demo of learning React Hooks
-
-
 function Stopwatch() {
-    const [lapse, setLapse] = useState(0)
+    const [lapse, setLapse] = useState(50)
     const [running, setRunning] = useState(false)
     const [savedTimes, setSavedTimes] = useState([])
     const timerRef = useRef()
@@ -107,10 +100,13 @@ function Stopwatch() {
           Clear
         </button>
 
-        {savedTimes && savedTimes.map(time => (
-            <ul>
-              <li>{convertTime(time)}</li>
-            </ul>
+        {savedTimes && savedTimes.map((time, index) => (
+            <div key={time}>
+              <ul>
+                <li>{convertTime(time)}</li>
+              </ul>
+              <div className="seperator"></div>
+            </div>
           )
         )
         }
