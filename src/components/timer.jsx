@@ -22,59 +22,81 @@ const runningButtonStyles = {
 }
 
 function Stopwatch() {
-    const [lapse, setLapse] = useState(50)
-    const [running, setRunning] = useState(false)
-    const [savedTimes, setSavedTimes] = useState([])
-    const timerRef = useRef()
+  // [matt]: Right now, this runs every single time it renders which will be a big performance hit
+  // const initialLapse = Number(window.localStorage.getItem('time lapse') || 0)
+  const initialLapse = () => Number(window.localStorage.getItem('time lapse') || 0)
+  const initialSavedTimes = JSON.parse(window.localStorage.getItem('saved times')) || []
+  console.log('[matt] initialSavedTimes', initialSavedTimes)
   
-    useEffect(() => {
-      return function cleanup() {
+  const [lapse, setLapse] = useState(initialLapse)
+  const [running, setRunning] = useState(false)
+  const [savedTimes, setSavedTimes] = useState(initialSavedTimes)
+  const timerRef = useRef()
+
+  useEffect(() => {
+    return function cleanup() {
+    clearInterval(timerRef.current)
+    }
+  }, [])
+
+  // [matt]: This runs after every render!
+  // useEffect(() => {
+  //   window.localStorage.setItem('time lapse', lapse)
+  // })
+  
+  // [matt]: This makes it render only when lapse changes
+  useEffect(() => {
+    window.localStorage.setItem('time lapse', lapse)
+  }, [lapse])
+
+  useEffect(() => {
+    window.localStorage.setItem('saved times', JSON.stringify(savedTimes))
+  }, [savedTimes])
+  
+
+  function handleRunClick() {
+    if (running) {
       clearInterval(timerRef.current)
-      }
-    }, [])
-  
-    function handleRunClick() {
-      if (running) {
-        clearInterval(timerRef.current)
-      } else {
-        const startTime = Date.now() - lapse
-        timerRef.current = setInterval(() => setLapse(Date.now() - startTime), 0)
-      }
-      convertTime(lapse)
-      
-      setRunning(!running)
+    } else {
+      const startTime = Date.now() - lapse
+      timerRef.current = setInterval(() => setLapse(Date.now() - startTime), 0)
     }
-  
-    function handleClearClick() {
-      clearInterval(timerRef.current)
-      setSavedTimes([...savedTimes, lapse])      
-      setLapse(0)
-      setRunning(false)
+    convertTime(lapse)
+    
+    setRunning(!running)
+  }
+
+  function handleClearClick() {
+
+    clearInterval(timerRef.current)
+    setSavedTimes([...savedTimes, lapse])      
+    setLapse(0)
+    setRunning(false)
+  }
+
+  function convertTime(time) {
+    let seconds = Math.floor(time / 1000)
+    if (seconds > 0) {        
+      seconds = seconds - Math.floor(seconds / 60) * 60
+    }
+    let secondPadding = ''
+    if (seconds < 10) {
+      secondPadding = 0
     }
 
-    function convertTime(time) {
-      let seconds = Math.floor(time / 1000)
-      if (seconds > 0) {        
-        seconds = seconds - Math.floor(seconds / 60) * 60
-      }
-      let secondPadding = ''
-      if (seconds < 10) {
-        secondPadding = 0
-      }
-
-      let minutes = Math.floor((time / 1000) / 60)
-      if (minutes > 0) {        
-        minutes = minutes - Math.floor(minutes / 60) * 60
-      }
-      let minutePadding = ''
-      if (minutes < 10) {
-        minutePadding = 0
-      }
-
-      const hours = Math.floor(time / 1000 / 60 / 60)
-
-      return `${hours}:${minutePadding}${minutes}:${secondPadding}${seconds}`
+    let minutes = Math.floor((time / 1000) / 60)
+    if (minutes > 0) {        
+      minutes = minutes - Math.floor(minutes / 60) * 60
     }
+    let minutePadding = ''
+    if (minutes < 10) {
+      minutePadding = 0
+    }
+
+    const hours = Math.floor(time / 1000 / 60 / 60)
+
+    return `${hours}:${minutePadding}${minutes}:${secondPadding}${seconds}`
+  }
 
     let btnStyles = buttonStyles
 
