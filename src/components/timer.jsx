@@ -2,6 +2,8 @@ import React from 'react'
 import {useState, useEffect, useRef} from 'react'
 import './timer.css'
 import base from './base'
+import {firestore} from 'firebase'
+
 
 const buttonStyles = {
     border: '1px solid #519D9E',
@@ -61,6 +63,16 @@ function Stopwatch() {
     }
   }, [savedTimes])
 
+  // useEffect(() => {
+  //   const ref = base.syncState(`mystopwatchtracker`, {
+  //     context: {
+  //       setState: ({ savedTimes }) => setSavedTimes({ ...savedTimes }),
+  //       state: { savedTimes },
+  //     },
+  //     state: 'savedTimes'
+  //   })
+  // }, [])
+    
   function handleRunClick() {
     if (running) {
       clearInterval(timerRef.current)
@@ -116,7 +128,8 @@ function Stopwatch() {
 
     if (running) {
       btnStyles = runningButtonStyles
-    }
+    }    
+    
   
     return (
       <div style={{textAlign: 'center'}}>
