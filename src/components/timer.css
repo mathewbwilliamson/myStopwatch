@@ -69,3 +69,17 @@ ul {
     background-color: #58C9B9;
     margin: 0 auto;
 }
+
+.clearAllButton {
+    border: 1px solid #519D9E;
+    background: #fff;
+    font-size: 0.75em;
+    font-weight: 400;
+    padding: 15px;
+    margin: 20px;
+    width: 100px;
+}
+
+.invisible {
+    display: none;
+}

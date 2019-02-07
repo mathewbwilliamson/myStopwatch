@@ -26,12 +26,12 @@ function Stopwatch() {
   // const initialLapse = Number(window.localStorage.getItem('time lapse') || 0)
   const initialLapse = () => Number(window.localStorage.getItem('time lapse') || 0)
   const initialSavedTimes = JSON.parse(window.localStorage.getItem('saved times')) || []
-  console.log('[matt] initialSavedTimes', initialSavedTimes)
   
   const [lapse, setLapse] = useState(initialLapse)
   const [running, setRunning] = useState(false)
   const [savedTimes, setSavedTimes] = useState(initialSavedTimes)
   const timerRef = useRef()
+  const [visible, setVisible] = useState('invisible')
 
   useEffect(() => {
     return function cleanup() {
@@ -53,6 +53,13 @@ function Stopwatch() {
     window.localStorage.setItem('saved times', JSON.stringify(savedTimes))
   }, [savedTimes])
   
+  useEffect(() => {    
+    if (savedTimes.length === 0) {
+      setVisible('invisible')
+    } else {
+      setVisible('')
+    }
+  }, [savedTimes])
 
   function handleRunClick() {
     if (running) {
@@ -67,9 +74,16 @@ function Stopwatch() {
   }
 
   function handleClearClick() {
-
     clearInterval(timerRef.current)
-    setSavedTimes([...savedTimes, lapse])      
+    setSavedTimes([...savedTimes, lapse]) 
+    setVisible('')     
+    setLapse(0)
+    setRunning(false)
+  }
+
+  function handleClearAllClick() {
+    clearInterval(timerRef.current)
+    setSavedTimes([])      
     setLapse(0)
     setRunning(false)
   }
@@ -121,17 +135,20 @@ function Stopwatch() {
         <button onClick={handleClearClick} style={btnStyles}>
           Clear
         </button>
-
-        {savedTimes && savedTimes.map((time, index) => (
-            <div key={time}>
-              <ul>
-                <li>{convertTime(time)}</li>
-              </ul>
-              <div className="seperator"></div>
-            </div>
-          )
-        )
-        }
+        
+        <div>
+          {savedTimes && savedTimes.map((time, index) => (
+            <div key={time + index}>
+                <ul>
+                  <li>{convertTime(time)}</li>
+                </ul>
+                <div className="seperator"></div>
+              </div>
+            )
+            )
+          }
+          <button onClick={handleClearAllClick} className={`clearAllButton ${visible}`}>Clear ALL</button>
+        </div>
       </div>
     )
   }
